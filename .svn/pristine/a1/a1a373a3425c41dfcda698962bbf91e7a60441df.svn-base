@@ -1,0 +1,119 @@
+/*
+ * TCSS 305 B - Programming Practicum Nicole Guobadia
+ * 
+ */
+
+package model;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+/**
+ * The cart class compiles together ItemOrders in an HashMap.
+ * 
+ * @author Nicole
+ * @version 1.0.0.
+ */
+public class Cart {
+    /** The ArrayList of orders that represents the cart. */
+    private final  Map<Item, Integer> myOrders = new HashMap<Item, Integer>();
+
+    /** The checkbox representation of whether someone is or is not a member. */
+    private boolean myMembership;
+
+    /**
+     * Constructor that creates an empty shopping cart.
+     */
+    public Cart() {
+
+    }
+
+    /**
+     * Adds an order to the shopping cart, replacing any previous order for an
+     * equivalent item with the new order. The parameter is an ItemOrder.
+     * (equals() would return true if used to compare equivalent items).The
+     * return type of this method is void
+     * 
+     * @param theOrder the item you want to add to your cart.
+     */
+    public void add(final ItemOrder theOrder) {
+        myOrders.put(theOrder.getItem(), theOrder.getQuantity());
+
+    }
+
+    /**
+     * Sets whether or not the customer for this shopping cart has a store
+     * membership (the parameter is a boolean; true means the customer has a
+     * membership, false means the customer doesn’t).The return is void.
+     * 
+     * @param theMembership boolean deciding whether or not a customer has a
+     *            membership.
+     */
+    public void setMembership(final boolean theMembership) {
+        myMembership = theMembership;
+
+    }
+
+    /**
+     * Returns the total cost of this shopping cart as a BigDecimal. This
+     * returned BigDecimal should have scale of 2 and use the ROUND_HALF_EVEN
+     * rounding rule.
+     * 
+     * @return the total amount of the cart.
+     */
+    public BigDecimal calculateTotal() {
+        double total = 0;
+        final Iterator<Item> i = myOrders.keySet().iterator();
+
+        while (i.hasNext()) {
+            final Item item = i.next();
+            final int itemQuantity = myOrders.get(item);
+            final double itemPrice = item.getPrice().doubleValue();
+
+            if (myMembership && item.isBulk()) {
+                final int itemBulkQuantity = item.getBulkQuantity();
+                final double itemBulkPrice = item.getBulkPrice().doubleValue();
+                
+                if (itemQuantity >= itemBulkQuantity) {
+                    while (itemQuantity - itemBulkQuantity >= 0) {
+                        total += itemBulkPrice;
+                        
+                    }
+                    total += (itemQuantity % itemBulkQuantity) * itemPrice;
+                    
+                } 
+
+            } else {
+                total += itemQuantity * itemPrice;
+                
+            }
+
+        }
+
+        return new BigDecimal(total).setScale(2,  RoundingMode.HALF_EVEN);
+
+    }
+
+    /**
+     * Removes all orders from the cart. The return is void.
+     */
+    public void clear() {
+        myOrders.clear();
+
+    }
+
+    /**
+     * Returns a String representation of this Cart.
+     */
+    @Override
+    public String toString() {
+        final StringBuilder build = new StringBuilder();
+        build.append(myOrders.toString());
+        
+        return build.toString();
+    }
+
+}

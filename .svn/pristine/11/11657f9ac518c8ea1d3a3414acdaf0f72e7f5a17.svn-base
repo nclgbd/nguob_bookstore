@@ -1,0 +1,87 @@
+
+package tests;
+
+import static org.junit.Assert.*;
+
+import java.math.BigDecimal;
+import model.Item;
+import org.junit.Before;
+import org.junit.Test;
+
+
+
+
+
+/**
+ * Tester for the equals method and the String method.
+ * @author Nicole
+ * @version 1.0.0
+ *
+ */
+public class BookstoreEqualsAndToStringTester {
+    /** The number 5, but BigDecimal version! */
+    private static final BigDecimal FIVE = BigDecimal.valueOf(5);
+    
+    /**The number 5, but integer version!*/
+    private static final int FIVE_INTEGER = 5;
+    
+    /** The default name for all the valid constructors.*/
+    private final String myName = "name";
+
+    /***/
+    private Item myItemNonNull;
+
+    /***/
+    private Item myItemBulkNonNull;
+
+    /**
+     * Instantiates itemNonNull and itemBulkNonNull.
+     */
+    @Before
+    public void setUp() {
+        myItemNonNull = new Item(myName, FIVE);
+        myItemBulkNonNull = new Item(myName, FIVE, FIVE_INTEGER, FIVE);
+
+    }
+
+    /**
+     * Tests to make sure it detects if an item is not equal.
+     */
+    @Test
+    public void testEqualsNonNullAssertFalse() {
+        final boolean isItemEqual = myItemNonNull.equals(new Item("namme", FIVE));
+
+        assertFalse("Two Param error, This should be false!", isItemEqual);
+    }
+
+    /**
+     * Tests to make sure it detects if an item is equal.
+     */
+    @Test
+    public void testEqualsNonNullAssertTrue() {
+        final boolean isItemEqual = myItemNonNull.equals(new Item(myName, FIVE));
+        assertTrue("Two Param error, This should be true!", isItemEqual);
+
+    }
+
+    /**
+     * Tests to make sure it detects if a bulk item is not equal.
+     */
+    @Test
+    public void testEqualsBulkNonNullAssertFalse() {
+        final boolean isItemEqual = myItemBulkNonNull.equals(new Item(myName, FIVE, 4, FIVE));
+        assertFalse("Four param error, This should be false!", isItemEqual);
+
+    }
+
+    /**
+     * Tests to make sure it detects if a bulk item is equal.
+     */
+    @Test
+    public void testEqualsBulkNonNullAssertTrue() {
+        final boolean isItemEqual = myItemBulkNonNull.equals(new Item(myName, FIVE, 5, FIVE));
+        assertTrue("Four param error, This should be true!", isItemEqual);
+
+    }
+
+}

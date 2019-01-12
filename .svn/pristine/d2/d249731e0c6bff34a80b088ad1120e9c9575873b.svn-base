@@ -1,0 +1,203 @@
+/*
+ * TCSS Programming Practicum - Assignment 2 Nicole Guobadia
+ */
+
+package model;
+
+import java.math.BigDecimal;
+import java.util.Objects;
+
+/**
+ * The class for an item, they are used directly with the item order.
+ * 
+ * @author Nicole
+ * @version 1.0.0.
+ */
+public final class Item {
+    /** It's literally the number 2. */
+    private static final int TWO = 2;
+
+    /** The name of the item. */
+    private String myName;
+
+    /** The price of the item. */
+    private BigDecimal myPrice;
+
+    /** The bulk quantity of the item. */
+    private int myBulkQuantity;
+
+    /** The bulk price of the item. */
+    private BigDecimal myBulkPrice;
+
+    /**
+     * Constructor that takes a name and a price as arguments. The name is a
+     * String and the price is a BigDecimal.
+     * 
+     * @param theName the name of the item.
+     * @param thePrice the price of the item.
+     */
+    public Item(final String theName, final BigDecimal thePrice) {
+        myName = theName;
+
+        if (thePrice.doubleValue() < 0) {
+            throw new IllegalArgumentException();
+
+        } else {
+            myPrice = Objects.requireNonNull(thePrice.setScale(TWO));
+
+        }
+
+    }
+
+    /**
+     * Constructor that takes a name, a single-item price, a bulk quantity, and
+     * a bulk price as arguments. The name is a String, the quantity is an int
+     * and the prices are BigDecimals.
+     * 
+     * @param theName the name of the item.
+     * @param thePrice the price of the item.
+     * @param theBulkQuantity the bulk quantity of the item.
+     * @param theBulkPrice the bulk price of the item.
+     */
+    public Item(final String theName, final BigDecimal thePrice, final int theBulkQuantity,
+                final BigDecimal theBulkPrice) {
+        myName = theName;
+
+        myPrice = Objects.requireNonNull(thePrice.setScale(TWO));
+        if (theBulkQuantity > 0) {
+            myBulkQuantity = theBulkQuantity;
+
+        } else {
+            throw new IllegalArgumentException();
+
+        }
+        myBulkPrice = Objects.requireNonNull(theBulkPrice.setScale(TWO));
+
+    }
+
+    /**
+     * Gets the name of the item.
+     * 
+     * @return name of the item
+     */
+    public String getName() {
+        return myName;
+
+    }
+
+    /**
+     * Getter for the price of an object.
+     * 
+     * @return the price of the object.
+     */
+    public BigDecimal getPrice() {
+
+        return myPrice;
+    }
+
+    /**
+     * Getter for the quantity of a bulk item.
+     * 
+     * @return the quantity of a bulk item.
+     */
+    public int getBulkQuantity() {
+
+        return myBulkQuantity;
+    }
+
+    /**
+     * Getter for the price of a bulk item.
+     * 
+     * @return the price of the bulk item.
+     */
+    public BigDecimal getBulkPrice() {
+
+        return myBulkPrice;
+    }
+
+    /**
+     * Boolean to check whether an item is a bulk item or not.
+     * 
+     * @return true if the item is a bulk item, false if it is not.
+     */
+    public boolean isBulk() {
+        if (myBulkQuantity > 0) {
+            return true;
+
+        }
+
+        return false;
+    }
+
+    /**
+     * The toString() override, will print the characteristics of the item.
+     */
+    @Override
+    public String toString() {
+        final String dollarComma = ", $";
+        final StringBuilder build = new StringBuilder();
+
+        if (!isBulk()) {
+            build.append(myName + dollarComma + getPrice());
+
+        } else {
+            build.append(myName + dollarComma + getPrice() + " (" + getBulkQuantity()
+                         + " for $" + getBulkPrice() + ")");
+        }
+
+        return build.toString();
+    }
+
+    /**
+     * The equals() override, will compare an object based on (blank).
+     */
+    @Override
+    public boolean equals(final Object theOther) {
+        try {
+            Objects.requireNonNull(theOther);
+
+        } catch (final NullPointerException e) {
+            System.out.println("Error: " + e);
+            return false;
+
+        }
+
+        if (theOther.getClass() != this.getClass()) {
+            return false;
+
+        }
+
+        final Item otherItem = (Item) theOther;
+
+        if (isBulk()) { // symmetry
+            if (!otherItem.getBulkPrice().equals(this.getBulkPrice())
+                || !otherItem.getPrice().equals(this.getPrice())
+                || otherItem.getName() != getName()
+                || otherItem.getBulkQuantity() != this.getBulkQuantity()) {
+
+                return false;
+
+            }
+
+        } else {
+            if (!otherItem.getPrice().equals(this.getPrice())
+                || !otherItem.myName.equals(this.myName)) {
+                return false;
+
+            }
+
+        }
+
+        return true;
+    }
+
+    /**
+     * The hashCode() override.
+     */
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+
+    }
+
+}
